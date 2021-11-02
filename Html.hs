@@ -1,4 +1,14 @@
-module Html where
+module Html
+    (
+      Html
+    , Title
+    , Structure
+    , html_
+    , p_
+    , h1_
+    , append_
+    , render
+    ) where
 
 -- Types
 
@@ -7,6 +17,8 @@ newtype Html = Html String
 newtype Structure = Structure String 
 
 type Title = String
+
+-- Utilities
 
 append_ :: Structure -> Structure -> Structure
 append_ (Structure str1) (Structure str2) = Structure $ str1 <> str2
@@ -21,6 +33,8 @@ render html =
     case html of
         Html str -> str
 
+-- HTML generators
+
 el :: String -> String -> String
 el tag content = "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 
@@ -34,11 +48,4 @@ p_ = Structure . el "p"
 
 h1_ :: String -> Structure
 h1_ = Structure . el "h1"
-
-myHtml1 :: Html
-myHtml1 = html_ "Learn Haskell" (append_ (h1_ "Header1") 
-                                                 (append_ (p_ "Paragraph1") (p_ "Paragraph2")))
-
-main :: IO ()
-main = putStrLn $ render myHtml1
 

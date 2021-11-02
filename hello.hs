@@ -1,28 +1,9 @@
 module Main where
 
-el :: String -> String -> String
-el tag content = "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
+import Html ( Html, append_, html_, p_, h1_, render )
 
-html_ :: String -> String
-html_ = el "html"
-
-body_ :: String -> String
-body_  = el "body" 
-
-head_ :: String -> String
-head_  = el "head" 
-
-title_ :: String -> String
-title_  =  el "title" 
-
-p_ :: String -> String
-p_ = el "p"
-
-h1_ :: String -> String
-h1_ = el "h1"
-
-makeHtml :: String -> String -> String
-makeHtml title body = html_ $ (head_ . title_) title <> body_ body
-
+myHtml1 :: Html
+myHtml1 = html_ "Learn Haskell" (append_ (h1_ "Header1") 
+                                                 (append_ (p_ "Paragraph1") (p_ "Paragraph2")))
 main :: IO ()
-main = putStrLn $ makeHtml "My page title" (h1_ "My Page" <> p_ "Hello, World!")
+main = putStrLn $ render myHtml1
