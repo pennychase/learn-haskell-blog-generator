@@ -19,6 +19,19 @@ newtype Structure = Structure String
 type Title = String
 
 -- Utilities
+escape :: String -> String
+escape =
+    let
+        escapeChar c =
+            case c of 
+                '<' -> "&lt;"
+                '>' -> "&gt;"
+                '&' -> "&amp;"
+                '"' -> "&quot;"
+                '\'' -> "&#39;"
+                _   -> [c]
+    in 
+        concat . map escapeChar
 
 append_ :: Structure -> Structure -> Structure
 append_ (Structure str1) (Structure str2) = Structure $ str1 <> str2
@@ -41,11 +54,11 @@ el tag content = "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 html_ :: Title -> Structure -> Html
 html_ title content = Html $ el "html"
                            $ el "head" 
-                           $ el "title" title <> el "body" (getStructureString content)
+                           $ el "title" (escape title) <> el "body" (getStructureString content)
 
 p_ :: String -> Structure
-p_ = Structure . el "p"
+p_ = Structure . el "p" . escape
 
 h1_ :: String -> Structure
-h1_ = Structure . el "h1"
+h1_ = Structure . el "h1" . escape
 
