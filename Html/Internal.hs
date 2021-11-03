@@ -8,6 +8,7 @@ newtype Structure = Structure String
 
 type Title = String
 
+
 -- Utilities
 escape :: String -> String
 escape =
