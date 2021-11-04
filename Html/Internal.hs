@@ -8,6 +8,8 @@ newtype Structure = Structure String
 
 type Title = String
 
+instance Semigroup Structure where
+        struct1 <> struct2 = Structure $ getStructureString struct1  <> getStructureString struct2
 
 -- Utilities
 escape :: String -> String
@@ -24,8 +26,6 @@ escape =
     in 
         concat . map escapeChar
 
-append_ :: Structure -> Structure -> Structure
-append_ (Structure str1) (Structure str2) = Structure $ str1 <> str2
 
 getStructureString :: Structure -> String 
 getStructureString structure =
