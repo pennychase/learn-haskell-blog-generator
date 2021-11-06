@@ -2,10 +2,11 @@ module Html
     (
       Html
     , Title
-    , Structure
+    , Structure (..)
+    , empty_
     , html_
     , p_
-    , h1_
+    , h_
     , ul_
     , ol_
     , code_

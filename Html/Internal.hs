@@ -1,12 +1,17 @@
 module Html.Internal where
 
+import Numeric.Natural
+
 -- Types
+
+type Title = String
 
 newtype Html = Html String
 
 newtype Structure = Structure String 
 
-type Title = String
+empty_ :: Structure
+empty_ = Structure ""
 
 instance Semigroup Structure where
         struct1 <> struct2 = Structure $ getStructureString struct1  <> getStructureString struct2
@@ -50,8 +55,9 @@ html_ title content = Html $ el "html"
 p_ :: String -> Structure
 p_ = Structure . el "p" . escape
 
-h1_ :: String -> Structure
-h1_ = Structure . el "h1" . escape
+h_ :: Natural -> String -> Structure
+h_ n = Structure . el ("h" <> show n) . escape
+
 
 ul_ :: [Structure] -> Structure
 ul_  = Structure . el "ul" . concatMap (el "li" . getStructureString) 
