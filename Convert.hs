@@ -21,11 +21,5 @@ convertStructure structure =
     Markup.CodeBlock list ->
       Html.code_ (unlines list)
 
-concatStructure :: [Html.Structure] -> Html.Structure
-concatStructure xs =
-  case xs of
-    [] -> Html.empty_
-    (y:ys) -> y <> concatStructure ys
-
 convertDocument :: Markup.Document -> Html.Structure
-convertDocument doc = concatStructure $ map convertStructure doc
+convertDocument doc = mconcat $ map convertStructure doc

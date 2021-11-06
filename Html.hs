@@ -3,7 +3,6 @@ module Html
       Html
     , Title
     , Structure (..)
-    , empty_
     , html_
     , p_
     , h_

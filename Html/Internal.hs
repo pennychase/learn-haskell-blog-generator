@@ -13,6 +13,9 @@ newtype Structure = Structure String
 empty_ :: Structure
 empty_ = Structure ""
 
+instance Monoid Structure where
+    mempty = empty_
+
 instance Semigroup Structure where
         struct1 <> struct2 = Structure $ getStructureString struct1  <> getStructureString struct2
 
