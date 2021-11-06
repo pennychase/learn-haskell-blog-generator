@@ -1,6 +1,6 @@
 module Html
     (
-      Html
+      Html (..)
     , Title
     , Structure (..)
     , html_

@@ -21,5 +21,5 @@ convertStructure structure =
     Markup.CodeBlock list ->
       Html.code_ (unlines list)
 
-convertDocument :: Markup.Document -> Html.Structure
-convertDocument doc = mconcat $ map convertStructure doc
+convert :: Html.Title -> Markup.Document -> Html.Html
+convert title = Html.html_ title . foldMap convertStructure
