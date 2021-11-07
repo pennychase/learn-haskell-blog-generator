@@ -1,8 +1,13 @@
 module Main where
 
-import Convert (process)
+import Convert (convert)
+import qualified Html
+import qualified Markup
 import System.Directory (doesFileExist)
 import System.Environment (getArgs)
+
+process :: Html.Title -> String -> String 
+process title = Html.render . convert title . Markup.parse
 
 confirm :: IO Bool
 confirm =
