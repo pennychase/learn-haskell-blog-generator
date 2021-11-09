@@ -1,5 +1,0 @@
-<html><head><title>sample-markup.txt</title><body><h1>Compiling programs with ghc</h1><p>Running ghc invokes the Glasgow Haskell Compiler (GHC), and can be used to compile Haskell modules and programs into native executables and libraries.</p><p>Create a new Haskell source file named hello.hs, and write the following code in it:</p><pre>main = putStrLn &quot;Hello, Haskell!&quot;
-</pre><p>Now, we can compile the program by invoking ghc with the file name:</p><pre>➜ ghc hello.hs
-[1 of 1] Compiling Main ( hello.hs, hello.o )
-Linking hello ...
-</pre><p>GHC created the following files:</p><ul><li><p>hello.hi - Haskell interface file</p></li><li><p>hello.o - Object file, the output of the compiler before linking</p></li><li><p>hello (or hello.exe on Microsoft Windows) - A native runnable executable.</p></li></ul><p>GHC will produce an executable when the source file satisfies both conditions:</p><ol><li><p>Defines the main function in the source file</p></li><li><p>Defines the module name to be Main, or does not have a module declaration</p></li></ol><p>Otherwise, it will only produce the .o and .hi files.</p></body></head></html>

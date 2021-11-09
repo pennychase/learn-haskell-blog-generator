@@ -32,20 +32,25 @@ library
   build-depends:
       base
     , directory
+    , optparse-applicative
   exposed-modules:
     HsBlog
       HsBlog.Convert
       HsBlog.Html
         HsBlog.Html.Internal
       HsBlog.Markup
-  -- other-modules:
+  --other-modules:
+
 
 executable hs-blog-gen
   import: common-settings
   hs-source-dirs: app
   main-is: Main.hs
+  other-modules:
+    OptParse
   build-depends:
       base
+    , optparse-applicative
     , hs-blog
   ghc-options:
     -O
