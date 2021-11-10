@@ -1,5 +1,7 @@
 module OptParse
-  ( Options (..)
+  ( Flags (..)
+  , Options (..)
+  , Opts (..)
   , SingleInput (..)
   , SingleOutput (..)
   , parse
@@ -10,6 +12,15 @@ import Options.Applicative
 
 -- Options data types
 
+-- All options
+data Opts = Opts Flags Options
+  deriving Show
+
+-- Boolean flags (false if flag isn't provided)
+data Flags = Overwrite Bool
+  deriving Show
+
+-- Options with arguments
 data Options
   = ConvertSingle SingleInput SingleOutput
   | ConvertDir FilePath FilePath
@@ -89,6 +100,15 @@ pOutputDir =
 pConvertDir :: Parser Options
 pConvertDir = ConvertDir <$> pInputDir <*> pOutputDir
 
+-- Overwrite Flag parser
+pOverwrite :: Parser Flags
+pOverwrite = Overwrite <$>
+  switch
+    (  long "replace"
+    <> short 'r'
+    <> help "OK to replace file?"
+    )
+
 -- Command parser
 pOptions :: Parser Options
 pOptions = 
@@ -107,15 +127,18 @@ pOptions =
         )
      )
 
+pOpts :: Parser Opts
+pOpts = Opts <$> pOverwrite <*> pOptions
+
 -- Parser Info
-opts :: ParserInfo Options
+opts :: ParserInfo Opts
 opts =
-  info (helper <*> pOptions)
+  info (helper <*> pOpts)
     ( fullDesc
       <> header "hs-blog-gen - a static blog generator"
       <> progDesc "Convert markup files or directories to html"
     )
 
 -- Command Line Options Parser
-parse :: IO Options
+parse :: IO Opts
 parse = execParser opts
