@@ -11,7 +11,7 @@ the following code in it:
 
 Now, we can compile the program by invoking ghc with the file name:
 
-> ➜ ghc hello.hs
+> $ ghc hello.hs
 > [1 of 1] Compiling Main             ( hello.hs, hello.o )
 > Linking hello ...
 
