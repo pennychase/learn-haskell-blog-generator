@@ -9,6 +9,12 @@ module HsBlog.Html
     , ul_
     , ol_
     , code_
+    , Content (..)
+    , txt_
+    , link_
+    , img_
+    , b_
+    , i_
     , render
     )
     where
