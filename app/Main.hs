@@ -3,6 +3,7 @@ module Main where
 import HsBlog
 import qualified HsBlog.Html as Html
 import OptParse
+
 import System.Exit (exitFailure)
 import System.Directory (doesFileExist)
 import System.IO
@@ -11,7 +12,7 @@ import System.IO
 getInput :: SingleInput -> IO (Html.Title, Handle)
 getInput input =
   case input of
-    Stdin -> pure ("Untitled", stdin)
+    Stdin -> pure ("", stdin)
     InputFile fname -> (,) fname <$> openFile fname ReadMode 
 
 getOutput :: Bool -> SingleOutput -> IO Handle
