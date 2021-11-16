@@ -37,6 +37,6 @@ main = do
       convertSingle title inFile outFile
       hClose inFile
       hClose outFile
-    ConvertDir input output -> convertDirectory input output
+    ConvertDir input output -> convertDirectory overwrite input output
 
 

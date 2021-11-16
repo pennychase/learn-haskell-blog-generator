@@ -32,10 +32,10 @@ data DirContents =
 -- Convert a directory by creating HTML files from .txt files
 -- and copying all other files to the destination directory
 -- May throw an exception on output directory creation
-convertDirectory :: FilePath -> FilePath -> IO ()
-convertDirectory inputDir outputDir = do
+convertDirectory :: Bool -> FilePath -> FilePath -> IO ()
+convertDirectory overwrite inputDir outputDir = do
   DirContents filesToProcess filesToCopy <- getDirFilesAndContent inputDir
-  createOutputDirectoryOrExit outputDir
+  createOutputDirectoryOrExit overwrite outputDir
   let
     outputHtmls = txtsToRenderedHtml filesToProcess
   copyFiles outputDir filesToCopy
@@ -93,24 +93,25 @@ buildIndex files =
 -- Output to directory
 
 -- Create output directory or tertminate if unable to    
-createOutputDirectoryOrExit :: FilePath -> IO ()
-createOutputDirectoryOrExit outputDir =
+createOutputDirectoryOrExit :: Bool -> FilePath -> IO ()
+createOutputDirectoryOrExit overwrite outputDir =
   whenIO
-    (not <$> createOutputDirectory outputDir)
+    (not <$> createOutputDirectory overwrite outputDir)
     (hPutStrLn stderr "Cancelled." *> exitFailure)
 
 -- Creates the output directory and returns Bool signifying if successful
 -- Asks user to confirm overwirting an existing directory 
-createOutputDirectory :: FilePath -> IO Bool
-createOutputDirectory dir = do
+createOutputDirectory :: Bool -> FilePath -> IO Bool
+createOutputDirectory overwrite dir = do
   dirExists <- doesDirectoryExist dir
   create <- if dirExists
             then do
-              overwrite <- confirm "Output directory exists. Overwrite?"
-              when overwrite (removeDirectoryRecursive dir)
-              pure overwrite
-            else
-              pure True
+              overwrite' <- 
+                if overwrite then pure overwrite
+                else confirm "Output directory exists. Overwrite?"
+              when overwrite' (removeDirectoryRecursive dir)
+              pure overwrite'
+            else pure True
   when create (createDirectory dir)
   pure create
 

@@ -106,7 +106,7 @@ pOverwrite = Overwrite <$>
   switch
     (  long "replace"
     <> short 'r'
-    <> help "OK to replace file?"
+    <> help "OK to replace destination?"
     )
 
 -- Command parser
