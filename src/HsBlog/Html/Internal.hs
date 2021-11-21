@@ -4,27 +4,36 @@ import Numeric.Natural
 
 -- Types
 
-type Title = String
-
 newtype Html = Html String
 
--- Content
+newtype Header = Header String
+
 newtype Content = Content String
+
+newtype Structure = Structure String 
+
+-- Instances
+
+-- Header
+instance Semigroup Header where
+    Header h1 <> Header h2 = Header (h1 <> h2)
+
+instance Monoid Header where
+    mempty = Header ""
+
+-- Content
+instance Semigroup Content where
+    struct1 <> struct2 = Content $ getContentString struct1  <> getContentString struct2
 
 instance Monoid Content where
     mempty = Content ""
 
-instance Semigroup Content where
-        struct1 <> struct2 = Content $ getContentString struct1  <> getContentString struct2
-
 -- Structure
-newtype Structure = Structure String 
+instance Semigroup Structure where
+    struct1 <> struct2 = Structure $ getStructureString struct1  <> getStructureString struct2
 
 instance Monoid Structure where
     mempty = Structure ""
-
-instance Semigroup Structure where
-        struct1 <> struct2 = Structure $ getStructureString struct1  <> getStructureString struct2
 
 -- Utilities
 
@@ -68,10 +77,22 @@ el tag content = "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 
 -- Structure
 
-html_ :: Title -> Structure -> Html
-html_ title content = Html $ el "html"
-                           $ el "head" 
-                           $ el "title" (escape title) <> el "body" (getStructureString content)
+html_ :: Header -> Structure -> Html
+html_ (Header header) content = Html 
+                              $ el "html"
+                              $ el "head" header
+                              <> el "body" (getStructureString content)
+
+title_ :: String -> Header
+title_ = Header . el "title" . escape
+
+stylesheet_ :: FilePath -> Header
+stylesheet_ path =
+  Header $ "<link rel=\"stylesheet\" type=\"text/css\" href=\"" <> escape path <> "\">"
+
+meta_ :: String -> String -> Header
+meta_ name content =
+  Header $ "<meta name=\"" <> escape name <> "\" content=\"" <> escape content <> "\">"
 
 p_ :: Content -> Structure
 p_ = Structure . el "p" . getContentString

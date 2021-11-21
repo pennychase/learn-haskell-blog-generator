@@ -9,7 +9,7 @@ import System.Directory (doesFileExist)
 import System.IO
 
 
-getInput :: SingleInput -> IO (Html.Title, Handle)
+getInput :: SingleInput -> IO (String, Handle)
 getInput input =
   case input of
     Stdin -> pure ("", stdin)
@@ -37,6 +37,6 @@ main = do
       convertSingle title inFile outFile
       hClose inFile
       hClose outFile
-    ConvertDir input output -> convertDirectory overwrite input output
+    ConvertDir input output env -> convertDirectory overwrite env input output
 
 

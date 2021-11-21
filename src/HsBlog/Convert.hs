@@ -1,5 +1,6 @@
 module HsBlog.Convert where
 
+import HsBlog.Env (Env(..))
 import qualified HsBlog.Html as Html
 import qualified HsBlog.Markup as Markup
 
@@ -21,6 +22,12 @@ convertStructure structure =
     Markup.CodeBlock list ->
       Html.code_ (unlines list)
 
-convert :: Html.Title -> Markup.Document -> Html.Html
-convert title = Html.html_ title . foldMap convertStructure
-
+convert :: Env -> String -> Markup.Document -> Html.Html
+convert env title doc = 
+  let
+    header = Html.title_ (eBlogName env <> " - " <> title)
+              <> Html.stylesheet_ (eStylesheetPath env)
+    article = foldMap convertStructure doc
+    websiteTitle = Html.h_ 1 (Html.link_ "index.html" $ Html.txt_ $ eBlogName env)
+    body = websiteTitle <> article
+  in Html.html_ header body

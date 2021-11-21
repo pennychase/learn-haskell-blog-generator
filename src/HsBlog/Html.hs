@@ -1,7 +1,10 @@
 module HsBlog.Html
     (
       Html (..)
-    , Title
+    , Header (..)
+    , title_
+    , meta_
+    , stylesheet_
     , Structure (..)
     , html_
     , p_

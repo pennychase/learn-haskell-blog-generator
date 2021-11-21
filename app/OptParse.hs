@@ -9,6 +9,7 @@ module OptParse
 
 import Data.Maybe (fromMaybe)
 import Options.Applicative
+import HsBlog.Env
 
 -- Options data types
 
@@ -23,7 +24,7 @@ data Flags = Overwrite Bool
 -- Options with arguments
 data Options
   = ConvertSingle SingleInput SingleOutput
-  | ConvertDir FilePath FilePath
+  | ConvertDir FilePath FilePath Env
   deriving Show
 
 data SingleInput
@@ -96,9 +97,38 @@ pOutputDir =
     <> help "Output directory"
     )
 
+-- Parser for blog environment
+pEnv :: Parser Env
+pEnv =
+  Env <$> pBlogName <*> pStylesheet
+
+-- | Blog name parser
+pBlogName :: Parser String
+pBlogName =
+  strOption
+    ( long "name"
+      <> short 'N'
+      <> metavar "STRING"
+      <> help "Blog name"
+      <> value (eBlogName defaultEnv)
+      <> showDefault
+    )
+
+-- | Stylesheet parser
+pStylesheet :: Parser String
+pStylesheet =
+  strOption
+    ( long "style"
+      <> short 'S'
+      <> metavar "FILE"
+      <> help "Stylesheet filename"
+      <> value (eStylesheetPath defaultEnv)
+      <> showDefault
+    )
+
 -- ConvertDir parser
 pConvertDir :: Parser Options
-pConvertDir = ConvertDir <$> pInputDir <*> pOutputDir
+pConvertDir = ConvertDir <$> pInputDir <*> pOutputDir <*> pEnv
 
 -- Overwrite Flag parser
 pOverwrite :: Parser Flags
