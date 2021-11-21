@@ -17,7 +17,7 @@ data Structure
     | UnorderedList [String]
     | OrderedList [String]
     | CodeBlock [String]
-    deriving Show 
+    deriving (Show, Eq)
 
 parse :: String -> Document
 parse = parseLines Nothing . lines
@@ -53,7 +53,7 @@ parseLines context txts =
     ('>' : ' ' : line) : rest ->
       case context of
         Just (CodeBlock code) ->
-          parseLines (Just (CodeBlock (code <> [trim line]))) rest
+          parseLines (Just (CodeBlock (code <> [line]))) rest
         _ ->
           maybe id (:) context (parseLines (Just (CodeBlock [trim line])) rest)
 

@@ -4,6 +4,8 @@ import HsBlog.Env (Env(..))
 import qualified HsBlog.Html as Html
 import qualified HsBlog.Markup as Markup
 
+-- | Convert our Markup Structure into the corresponding HTML Structure. 
+--   Handles header, paragraph, ordered and unordered lists, and code blocks
 convertStructure :: Markup.Structure -> Html.Structure
 convertStructure structure =
   case structure of
@@ -22,7 +24,11 @@ convertStructure structure =
     Markup.CodeBlock list ->
       Html.code_ (unlines list)
 
-convert :: Env -> String -> Markup.Document -> Html.Html
+-- | Convert a single Markup document into an Html document
+convert :: Env -- ^ Environment passes blog name, stylesheet, etc.
+        -> String -- ^ Title (by default the filepath)
+        -> Markup.Document -- ^ Markup document
+        -> Html.Html
 convert env title doc = 
   let
     header = Html.title_ (eBlogName env <> " - " <> title)

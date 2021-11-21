@@ -1,8 +1,12 @@
+{- | Internal types and functions for HTML. Public interface is exported in Html
+
+-}
+
 module HsBlog.Html.Internal where
 
 import Numeric.Natural
 
--- Types
+-- * Types for representing HTML
 
 newtype Html = Html String
 
@@ -35,7 +39,71 @@ instance Semigroup Structure where
 instance Monoid Structure where
     mempty = Structure ""
 
--- Utilities
+
+-- * HTML EDSL
+
+html_ :: Header -> Structure -> Html
+html_ (Header header) content = Html 
+                              $ el "html"
+                              $ el "head" header
+                              <> el "body" (getStructureString content)
+
+-- ** Construct @\<head\>@
+
+title_ :: String -> Header
+title_ = Header . el "title" . escape
+
+stylesheet_ :: FilePath -> Header
+stylesheet_ path =
+  Header $ "<link rel=\"stylesheet\" type=\"text/css\" href=\"" <> escape path <> "\">"
+
+meta_ :: String -> String -> Header
+meta_ name content =
+  Header $ "<meta name=\"" <> escape name <> "\" content=\"" <> escape content <> "\">"
+
+-- ** Construct @\<body\>@
+
+p_ :: Content -> Structure
+p_ = Structure . el "p" . getContentString
+
+h_ :: Natural -> Content -> Structure
+h_ n = Structure . el ("h" <> show n) . getContentString
+
+ul_ :: [Structure] -> Structure
+ul_  = Structure . el "ul" . concatMap (el "li" . getStructureString) 
+
+ol_ :: [Structure] -> Structure
+ol_  = Structure . el "ol" . concatMap (el "li" . getStructureString) 
+
+code_ :: String -> Structure
+code_ = Structure . el "pre" . escape
+
+-- ** Construct content within structures
+
+txt_ :: String -> Content
+txt_ = Content . escape
+
+link_ :: FilePath -> Content -> Content
+link_ path content =
+  Content $
+    elAttr
+      "a"
+      ("href=\"" <> escape path <> "\"")
+      (getContentString content)
+
+img_ :: FilePath -> Content
+img_ path =
+  Content $ "<img src=\"" <> escape path <> "\">"
+
+b_ :: Content -> Content
+b_ content =
+  Content $ el "b" (getContentString content)
+
+i_ :: Content -> Content
+i_ content =
+  Content $ el "i" (getContentString content)
+
+-- * Utilities
 
 escape :: String -> String
 escape =
@@ -73,63 +141,4 @@ elAttr tag attrs content =
 el :: String -> String -> String
 el tag content = "<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 
--- HTML generators
-
--- Structure
-
-html_ :: Header -> Structure -> Html
-html_ (Header header) content = Html 
-                              $ el "html"
-                              $ el "head" header
-                              <> el "body" (getStructureString content)
-
-title_ :: String -> Header
-title_ = Header . el "title" . escape
-
-stylesheet_ :: FilePath -> Header
-stylesheet_ path =
-  Header $ "<link rel=\"stylesheet\" type=\"text/css\" href=\"" <> escape path <> "\">"
-
-meta_ :: String -> String -> Header
-meta_ name content =
-  Header $ "<meta name=\"" <> escape name <> "\" content=\"" <> escape content <> "\">"
-
-p_ :: Content -> Structure
-p_ = Structure . el "p" . getContentString
-
-h_ :: Natural -> Content -> Structure
-h_ n = Structure . el ("h" <> show n) . getContentString
-
-ul_ :: [Structure] -> Structure
-ul_  = Structure . el "ul" . concatMap (el "li" . getStructureString) 
-
-ol_ :: [Structure] -> Structure
-ol_  = Structure . el "ol" . concatMap (el "li" . getStructureString) 
-
-code_ :: String -> Structure
-code_ = Structure . el "pre" . escape
-
--- Content
-txt_ :: String -> Content
-txt_ = Content . escape
-
-link_ :: FilePath -> Content -> Content
-link_ path content =
-  Content $
-    elAttr
-      "a"
-      ("href=\"" <> escape path <> "\"")
-      (getContentString content)
-
-img_ :: FilePath -> Content
-img_ path =
-  Content $ "<img src=\"" <> escape path <> "\">"
-
-b_ :: Content -> Content
-b_ content =
-  Content $ el "b" (getContentString content)
-
-i_ :: Content -> Content
-i_ content =
-  Content $ el "i" (getContentString content)
 
